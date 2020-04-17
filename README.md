@@ -4,7 +4,6 @@ Um simples jogo de Damas.
 Esse foi um dos meus primeiros programas "grandes" que tive que fazer no início do curso, porém não havia concluido.
 Então resolvi refazer depois de um ano para ver como eu evoluí.
 
-
 !!! LEIA AS REGRAS ABAIXO PARA ENTENDER O FUNCIONAMENTO DO PROGRAMA, CASO DESEJE JOGAR !!!
 
 MODO USUÁRIO CONTRA USUÁRIO:

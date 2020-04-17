@@ -526,7 +526,6 @@ def trancou_peça(matriz):
 
   global Peças_obtidas0
   global Peças_obtidas1
-  
   peças_trancadas0 = 0
   peças_trancadas1 = 0
 

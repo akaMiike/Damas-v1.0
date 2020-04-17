@@ -6,6 +6,7 @@ Então resolvi refazer depois de um ano para ver como eu evoluí.
 
 !!! LEIA AS REGRAS ABAIXO PARA ENTENDER O FUNCIONAMENTO DO PROGRAMA, CASO DESEJE JOGAR !!!
 
+
 MODO USUÁRIO CONTRA USUÁRIO:
 
 U.1. Na vez de cada usuário, uma jogada deverá ser entrada. Cada

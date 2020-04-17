@@ -43,11 +43,11 @@ def criar_tabuleiro():
                 Tabuleiro[linha][coluna] = '#'
 
               #Coloca as peças 'o' e '@' no tabuleiro nas linhas pares
-              """else:
+              else:
                 if numero_linha < 3:
                   Tabuleiro[linha][coluna] = 'o'
                 if numero_linha > 6:
-                  Tabuleiro[linha][coluna] = '@'"""
+                  Tabuleiro[linha][coluna] = '@'
 
             else:
               
@@ -57,20 +57,10 @@ def criar_tabuleiro():
 
               #Coloca as peças 'o' e '@' no tabuleiro nas linhas impares
               else:
-               """if numero_linha < 3:
+                if numero_linha < 3:
                   Tabuleiro[linha][coluna] = 'o'
                 if numero_linha > 6:
-                  Tabuleiro[linha][coluna] = '@'"""
-              Tabuleiro[2][8] = "o"
-              Tabuleiro[8][10] = "O"
-              Tabuleiro[4][6] = "@"
-              Tabuleiro[4][14] = "@"
-              Tabuleiro[6][8] = "@"
-              Tabuleiro[6][12] = "@"
-              Tabuleiro[10][8] = "@"
-              Tabuleiro[10][12] = "@"
-              Tabuleiro[12][6] = "@"
-              Tabuleiro[12][14] = "@"
+                  Tabuleiro[linha][coluna] = '@'
 
   return Tabuleiro
 
@@ -86,7 +76,7 @@ def movimento_peça(movimento,matriz):
   global Peças_obtidas0
   global Peças_obtidas1
   global Jogador
-  
+
   if len(movimento) < 6:
     return False
 
@@ -94,9 +84,6 @@ def movimento_peça(movimento,matriz):
     posição_peça_atual = verificar_posição_atual(movimento[0],movimento[1],matriz)
     posição_peça_desejada = verificar_posição_desejada(movimento[4],movimento[5],matriz)
 
-    """if trancou_peça(*posição_peça_atual,matriz):
-      print("Todas as peças do Jogador %d foram trancadas!",Jogador)
-      return True"""
 
     if posição_peça_atual != False and posição_peça_desejada != False:
 
@@ -245,7 +232,7 @@ def movimento_peça(movimento,matriz):
         #Movimento de uma dama(&) (Qualquer lugar)
         if matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "&":
           return mover_dama2(posição_peça_atual,posição_peça_desejada,matriz)
-    
+
   return False
 
 #Verifica e transforma a peça caso ela possa virar dama
@@ -534,9 +521,12 @@ def verificar_posição_desejada(coluna_desejada,linha_desejada,matriz):
   else:
     return False
     
-#Verificar e retorna quantas peças estão trancadas, o jogador que tiver todas trancadas perde.
+#Verifica se todas as peças estão trancadas, se sim, é considerada derrota
 def trancou_peça(matriz):
 
+  global Peças_obtidas0
+  global Peças_obtidas1
+  
   peças_trancadas0 = 0
   peças_trancadas1 = 0
 
@@ -609,7 +599,24 @@ def trancou_peça(matriz):
               if matriz[linha+aux][coluna-aux] == "o" or matriz[linha+aux][coluna-aux] == "O":
                 espaços_frente += 1
 
-  return [peças_trancadas0,peças_trancadas1]
+        
+        #Verifica se o espaço na frente da peça e o espaço seguinte possuem uma peça adversaria (Peça está trancada ou não)
+        if espaços_frente == max_peças_adv:
+          peças_trancadas1 += 1
+        
+        espaços_frente = 0
+        max_peças_adv = 0
+    
+  #Verificar quantas peças foram trancadas e se houve derrota por trancar todas as peças adversárias
+  if peças_trancadas0 == 15 - Peças_obtidas1 or peças_trancadas1 == 15 - Peças_obtidas0:
+
+    if peças_trancadas0 == 15 - Peças_obtidas1:
+      Peças_obtidas1 = 15
+      print("Todas as peças do Jogador 0 (o/O) foram trancadas!")
+    
+    else:
+      Peças_obtidas0 = 15
+      print("Todas as peças do Jogador 1 (@/&) foram trancadas!")
 
 Recomeçar = "S"
 
@@ -653,6 +660,8 @@ while Recomeçar == "S":
       movimento = input("\nJogada inválida, digite um movimento válido (Ex: A7--B6): ")
       mover_peça = movimento_peça(movimento,Tabuleiro)
 
+    trancou_peça(Tabuleiro)
+
     #Verifica se todas as peças de alguem foram obtidas (Vencedor)
     if Peças_obtidas0 == 15 or Peças_obtidas1 == 15:
       Vencedor = True
@@ -666,8 +675,6 @@ while Recomeçar == "S":
       Recomeçar = input("\nDeseja jogar novamente a partida? digite (S) para sim e (N) para não: ")
       print("\n\n")
 
-    
-    print(trancou_peça(Tabuleiro))
     verificar_dama(Tabuleiro)
     Jogador += 1
 

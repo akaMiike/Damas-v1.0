@@ -1,4 +1,4 @@
-  #Damas Project - O retorno
+  #Damas v1.0
 
 #Cria o tabuleiro
 def criar_tabuleiro():
@@ -12,7 +12,7 @@ def criar_tabuleiro():
 
   for linha in range(23):
 
-    #Atribui a primeira e última linha com as letras das Colunas
+    #Atribui a primeira e última linha com as letras das colunas
     if linha == 0 or linha == 22: 
       Tabuleiro[linha] = nome_coluna 
   
@@ -43,11 +43,11 @@ def criar_tabuleiro():
                 Tabuleiro[linha][coluna] = '#'
 
               #Coloca as peças 'o' e '@' no tabuleiro nas linhas pares
-              else:
+              """else:
                 if numero_linha < 3:
                   Tabuleiro[linha][coluna] = 'o'
                 if numero_linha > 6:
-                  Tabuleiro[linha][coluna] = '@'
+                  Tabuleiro[linha][coluna] = '@'"""
 
             else:
               
@@ -57,10 +57,20 @@ def criar_tabuleiro():
 
               #Coloca as peças 'o' e '@' no tabuleiro nas linhas impares
               else:
-                if numero_linha < 3:
+               """if numero_linha < 3:
                   Tabuleiro[linha][coluna] = 'o'
                 if numero_linha > 6:
-                  Tabuleiro[linha][coluna] = '@'
+                  Tabuleiro[linha][coluna] = '@'"""
+              Tabuleiro[2][8] = "o"
+              Tabuleiro[8][10] = "O"
+              Tabuleiro[4][6] = "@"
+              Tabuleiro[4][14] = "@"
+              Tabuleiro[6][8] = "@"
+              Tabuleiro[6][12] = "@"
+              Tabuleiro[10][8] = "@"
+              Tabuleiro[10][12] = "@"
+              Tabuleiro[12][6] = "@"
+              Tabuleiro[12][14] = "@"
 
   return Tabuleiro
 
@@ -71,10 +81,11 @@ def imprimir_tabuleiro(matriz):
     print(''.join(matriz[i]))
 
 #Move a peça e retorna True, caso o movimento seja inválido, retorna False
-def movimento_peça(Jogador,movimento,matriz):
+def movimento_peça(movimento,matriz):
   
   global Peças_obtidas0
   global Peças_obtidas1
+  global Jogador
   
   if len(movimento) < 6:
     return False
@@ -83,7 +94,12 @@ def movimento_peça(Jogador,movimento,matriz):
     posição_peça_atual = verificar_posição_atual(movimento[0],movimento[1],matriz)
     posição_peça_desejada = verificar_posição_desejada(movimento[4],movimento[5],matriz)
 
+    """if trancou_peça(*posição_peça_atual,matriz):
+      print("Todas as peças do Jogador %d foram trancadas!",Jogador)
+      return True"""
+
     if posição_peça_atual != False and posição_peça_desejada != False:
+
       #Movimento da peça (o)
       if Jogador%2 == 0:
         #Movimento de uma peça normal (o) sem capturar peça:
@@ -106,6 +122,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
               Peças_obtidas0 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
 
             elif (matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == "@" or matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == "&") and matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == matriz[posição_peça_desejada[0]+2][posição_peça_desejada[1]-2]:
@@ -114,6 +132,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
               Peças_obtidas0 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
             
             else:
@@ -128,6 +148,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
               Peças_obtidas0 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
 
             elif (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "@" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "&") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]+2]:
@@ -136,6 +158,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
               Peças_obtidas0 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
             
             else:
@@ -174,6 +198,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
               Peças_obtidas1 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
             
             elif (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == "o" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == "O") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]-2]:
@@ -182,6 +208,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
               Peças_obtidas1 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
             
             else:
@@ -196,6 +224,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
               Peças_obtidas1 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
 
             elif (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "o" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "O") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]+2]:
@@ -204,6 +234,8 @@ def movimento_peça(Jogador,movimento,matriz):
               matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] = " "
               matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
               Peças_obtidas1 += 1
+              Jogador -= 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
               return True
             
             else:
@@ -216,7 +248,7 @@ def movimento_peça(Jogador,movimento,matriz):
     
   return False
 
-#Verifica se alguma peça pode virar dama e põe a dama
+#Verifica e transforma a peça caso ela possa virar dama
 def verificar_dama(matriz):
   for i in range(2,20,4):
     if matriz[2][i+2] == "@":
@@ -230,7 +262,9 @@ def mover_dama1(posição_atual,posição_desejada,matriz):
   num_peças1 = 0
   local_peça1 = []
   aux = 2
+
   global Peças_obtidas0
+  global Jogador
 
   #Se o movimento for para direita (Para trás ou para frente): 
   if posição_desejada[1] > posição_atual[1]:
@@ -278,6 +312,9 @@ def mover_dama1(posição_atual,posição_desejada,matriz):
     if num_peças1 == 1:
       matriz[local_peça1[0]][local_peça1[1]] = " "
       Peças_obtidas0 += 1
+      Jogador -= 1
+      print("\nVocê obteve uma peça adversária! Jogue Novamente")
+      
 
     matriz[posição_atual[0]][posição_atual[1]] = " "
     matriz[posição_desejada[0]][posição_desejada[1]] = "O"
@@ -329,6 +366,8 @@ def mover_dama1(posição_atual,posição_desejada,matriz):
     if num_peças1 == 1:
       matriz[local_peça1[0]][local_peça1[1]] = " "
       Peças_obtidas0 += 1
+      Jogador -= 1
+      print("\nVocê obteve uma peça adversária! Jogue Novamente")
 
     matriz[posição_atual[0]][posição_atual[1]] = " "
     matriz[posição_desejada[0]][posição_desejada[1]] = "O"
@@ -342,6 +381,8 @@ def mover_dama2(posição_atual,posição_desejada,matriz):
   num_peças2 = 0
   local_peça2 = []
   aux = 2
+
+  global Jogador
   global Peças_obtidas1
 
   #Se o movimento for para direita (Para trás ou para frente): 
@@ -389,7 +430,9 @@ def mover_dama2(posição_atual,posição_desejada,matriz):
     #Verificar se tinha alguma peça adversária obtida ou não
     if num_peças2 == 1:
       matriz[local_peça2[0]][local_peça2[1]] = " "
+      Jogador -= 1
       Peças_obtidas1 += 1
+      print("\nVocê obteve uma peça adversária! Jogue Novamente")
 
     matriz[posição_atual[0]][posição_atual[1]] = " "
     matriz[posição_desejada[0]][posição_desejada[1]] = "&"
@@ -440,7 +483,9 @@ def mover_dama2(posição_atual,posição_desejada,matriz):
     #Verificar se tinha alguma peça adversária obtida ou não
     if num_peças2 == 1:
       matriz[local_peça2[0]][local_peça2[1]] = " "
+      Jogador -= 1
       Peças_obtidas1 += 1
+      print("\nVocê obteve uma peça adversária! Jogue Novamente")
 
     matriz[posição_atual[0]][posição_atual[1]] = " "
     matriz[posição_desejada[0]][posição_desejada[1]] = "&"
@@ -449,7 +494,7 @@ def mover_dama2(posição_atual,posição_desejada,matriz):
   else:
     return False
 
-#Verifica e retorna a posição da peça atual se existir
+#Verifica e retorna a posição da peça que deseja mover, se existir
 def verificar_posição_atual(coluna_atual,linha_atual,matriz):
 
   coluna = 2
@@ -468,7 +513,7 @@ def verificar_posição_atual(coluna_atual,linha_atual,matriz):
   else:
     return False
 
-#Verifica se existe um espaço vazio válido na posição desejada,se sim, retorna a posição
+#Verifica se existe um espaço vazio válido na posição onde deseja mover,se sim, retorna a posição
 def verificar_posição_desejada(coluna_desejada,linha_desejada,matriz):
 
   coluna = 2
@@ -489,6 +534,83 @@ def verificar_posição_desejada(coluna_desejada,linha_desejada,matriz):
   else:
     return False
     
+#Verificar e retorna quantas peças estão trancadas, o jogador que tiver todas trancadas perde.
+def trancou_peça(matriz):
+
+  peças_trancadas0 = 0
+  peças_trancadas1 = 0
+
+  espaços_frente = 0 # Número de espaços na frente e o espaço seguinte da frente da peça
+  max_peças_adv = 0 # Numero de peças adversarias que precisam para trancar
+
+  #Percorre o tabuleiro 
+  for linha in range(2,21,2):
+    for coluna in range(2,21,2):
+      
+      #Verificar peças (o)
+      if matriz[linha][coluna] == "o" or matriz[linha][coluna] == "O":
+        for aux in range(2,5,2):
+          #Verifica se há espaço na frente e na frente seguinte da peça e se está trancado pela esquerda
+          if coluna+aux < 21 and linha+aux < 21:
+            max_peças_adv += 1
+            if matriz[linha+aux][coluna+aux] == "@" or matriz[linha+aux][coluna+aux] == "&":
+              espaços_frente += 1
+
+          #Verifica se há espaço na frente e na frente seguinte da peça e se está trancado pela direita
+          if coluna-aux > 1 and linha+aux < 21:
+            max_peças_adv += 1
+            if matriz[linha+aux][coluna-aux] == "@" or matriz[linha+aux][coluna-aux] == "&":
+              espaços_frente += 1
+          
+          #Verifica os espaços de trás e o seguinte ao de trás (Dama)
+          if matriz[linha][coluna] == "O":
+            if coluna-aux > 1 and linha-aux > 1:
+              max_peças_adv += 1
+              if matriz[linha-aux][coluna-aux] == "@" or matriz[linha-aux][coluna-aux] == "&":
+                espaços_frente += 1
+            
+            if coluna+aux < 21 and linha-aux > 1:
+              max_peças_adv += 1
+              if matriz[linha-aux][coluna+aux] == "@" or matriz[linha-aux][coluna+aux] == "&":
+                espaços_frente += 1
+        
+        #Verifica se o espaço na frente da peça e o espaço seguinte possuem uma peça adversaria (Peça está trancada ou não)
+        if espaços_frente == max_peças_adv:
+          peças_trancadas0 += 1
+        
+        espaços_frente = 0
+        max_peças_adv = 0
+
+      #Verificar peças (@)
+      if matriz[linha][coluna] == "@" or matriz[linha][coluna] == "&":
+        for aux in range(2,5,2):
+
+          #Verifica se há espaço na frente e na frente seguinte da peça e se está trancado pela direita
+          if coluna+aux < 21 and linha-aux > 1:
+            max_peças_adv += 1
+            if matriz[linha-aux][coluna+aux] == "o" or matriz[linha-aux][coluna+aux] == "O":
+              espaços_frente += 1   
+
+          #Verifica se há espaço na frente e na frente seguinte da peça e se está trancado pela esquerda
+          if coluna-aux > 1 and linha-aux > 1:
+            max_peças_adv += 1
+            if matriz[linha-aux][coluna-aux] == "o" or matriz[linha-aux][coluna-aux] == "O":
+              espaços_frente += 1  
+
+          #Verifica os espaços de trás e o seguinte ao de trás (Dama)
+          if matriz[linha][coluna] == "&":
+            if coluna+aux < 21 and linha+aux < 21:
+              max_peças_adv += 1
+              if matriz[linha+aux][coluna+aux] == "o" or matriz[linha+aux][coluna+aux] == "O":
+                espaços_frente += 1
+            
+            if coluna-aux > 1 and linha+aux < 21:
+              max_peças_adv += 1
+              if matriz[linha+aux][coluna-aux] == "o" or matriz[linha+aux][coluna-aux] == "O":
+                espaços_frente += 1
+
+  return [peças_trancadas0,peças_trancadas1]
+
 Recomeçar = "S"
 
 while Recomeçar == "S":
@@ -515,21 +637,21 @@ while Recomeçar == "S":
   while Vencedor == False:
 
     if Jogador%2 == 0:
-      print("\nÉ a vez do jogador de cima (o)!")
+      print("É a vez do jogador de cima (o)!")
     else:
-      print("\nÉ a vez do jogador de baixo (@)!")
+      print("É a vez do jogador de baixo (@)!")
     
     imprimir_tabuleiro(Tabuleiro)
     print("\nPeças obtidas pelo Jogador 0 (o/O) = %d" % Peças_obtidas0)
     print("Peças obtidas pelo Jogador 1 (@/&) = %d\n" % Peças_obtidas1)
 
     movimento = input("Digite o local da sua peça e para onde deseja mover conforme o exemplo (Ex: A7--B6): ")
-    mover_peça = movimento_peça(Jogador,movimento,Tabuleiro)
+    mover_peça = movimento_peça(movimento,Tabuleiro)
 
     #Verificar se o movimento foi válido
     while mover_peça == False :
       movimento = input("\nJogada inválida, digite um movimento válido (Ex: A7--B6): ")
-      mover_peça = movimento_peça(Jogador,movimento,Tabuleiro)
+      mover_peça = movimento_peça(movimento,Tabuleiro)
 
     #Verifica se todas as peças de alguem foram obtidas (Vencedor)
     if Peças_obtidas0 == 15 or Peças_obtidas1 == 15:
@@ -544,5 +666,9 @@ while Recomeçar == "S":
       Recomeçar = input("\nDeseja jogar novamente a partida? digite (S) para sim e (N) para não: ")
       print("\n\n")
 
+    
+    print(trancou_peça(Tabuleiro))
     verificar_dama(Tabuleiro)
     Jogador += 1
+
+print("\nObrigado por jogar!")

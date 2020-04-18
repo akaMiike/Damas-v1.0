@@ -12,8 +12,7 @@ MODO USUÁRIO CONTRA USUÁRIO:
 U.1. Na vez de cada usuário, uma jogada deverá ser entrada. Cada
 jogada é composta da posição inicial e da posição final de uma peça,
 no modo “COLUNA_INICIAL/LINHA_INICIAL>--
-COLUNA_FINAL/LINHA_FINAL”, conforme mapeado no exemplo
-da Figura 1, sem nenhum espaço entre os caracteres da jogada. São
+COLUNA_FINAL/LINHA_FINAL”, sem nenhum espaço entre os caracteres da jogada. São
 exemplos de jogadas: “B0--C1”, “I7--H6”.
 
 U.2. As peças podem ser de dois tipos: normais (“@” ou “o”) ou damas (“&” ou “O”). As peças normais só

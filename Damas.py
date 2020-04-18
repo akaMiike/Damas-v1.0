@@ -70,14 +70,14 @@ def imprimir_tabuleiro(matriz):
   for i in range(23):
     print(''.join(matriz[i]))
 
-#Move a peça e retorna True, caso o movimento seja inválido, retorna False
+#Move ou captura uma peça e retorna True, caso o movimento seja inválido, retorna False
 def movimento_peça(movimento,matriz):
   
   global Peças_obtidas0
   global Peças_obtidas1
   global Jogador
 
-  if len(movimento) < 6:
+  if len(movimento) < 6 or movimento[2:4] != "--":
     return False
 
   else:
@@ -89,71 +89,55 @@ def movimento_peça(movimento,matriz):
 
       #Movimento da peça (o)
       if Jogador%2 == 0:
-        #Movimento de uma peça normal (o) sem capturar peça:
-        if posição_peça_desejada[0] == posição_peça_atual[0]+2 and matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "o":
 
-          #Esquerda ou Direita:
-          if posição_peça_desejada[1] == posição_peça_atual[1]+2 or posição_peça_desejada[1] == posição_peça_atual[1]-2:
-            matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-            matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
-            return True
+        #Movimento de uma peça normal (o) sem capturar peça (Esquerda ou direita):
+        if verificar_movimento(posição_peça_atual,posição_peça_desejada,"E/D","M","o",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
+          return True
 
-        #Movimento de uma peça normal (o) capturando peça (Para trás ou para frente):
-        elif (posição_peça_desejada[0] == posição_peça_atual[0]+4 or posição_peça_desejada[0] == posição_peça_atual[0]-4) and matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "o":
+        #Movimento de uma peça normal (o) capturando peça:
+        #Direita p/ frente:
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"DF","C","o",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
+          Peças_obtidas0 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
-          #Direita:
-          if posição_peça_desejada[1] == posição_peça_atual[1]+4:
-            if (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == "@" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == "&") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]-2]:
+        #Direita p/ trás
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"DT","C","o",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
+          Peças_obtidas0 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
-              Peças_obtidas0 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
+        #Esquerda p/ trás:
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"ET","C","o",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
+          Peças_obtidas0 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
-            elif (matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == "@" or matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == "&") and matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == matriz[posição_peça_desejada[0]+2][posição_peça_desejada[1]-2]:
-
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
-              Peças_obtidas0 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
-            
-            else:
-              return False
-
-          #Esquerda:
-          elif posição_peça_desejada[1] == posição_peça_atual[1]-4:
-
-            if (matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] == "@" or matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] == "&") and matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] == matriz[posição_peça_desejada[0]+2][posição_peça_desejada[1]+2]:
-
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
-              Peças_obtidas0 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
-
-            elif (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "@" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "&") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]+2]:
-
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
-              Peças_obtidas0 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
-            
-            else:
-              return False
-
-          else:
-            return False
+          #Esquerda p/ frente:
+        
+        #Esquerda p/ frente:
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"EF","C","o",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "o"
+          Peças_obtidas0 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
         #Movimento de uma dama (O) (Qualquer lugar)
         elif matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "O":
@@ -165,74 +149,153 @@ def movimento_peça(movimento,matriz):
       #Movimento da peça (@)
       else:
         #Movimento de uma peça normal (@) sem capturar peça:
-        if posição_peça_desejada[0] == posição_peça_atual[0]-2 and matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "@":
+        if verificar_movimento(posição_peça_atual,posição_peça_desejada,"E/D","M","@",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
+          return True
 
-          #Esquerda ou Direita:
-          if posição_peça_desejada[1] == posição_peça_atual[1]+2 or posição_peça_desejada[1] == posição_peça_atual[1]-2:
-            matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-            matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
-            return True
+        #Movimento de uma peça normal (@) capturando peça:
 
-        #Movimento de uma peça normal (@) capturando peça (Para trás ou para frente):
-        elif (posição_peça_desejada[0] == posição_peça_atual[0]+4 or posição_peça_desejada[0] == posição_peça_atual[0]-4) and matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "@":
-
-          #Direita (Pra frente ou pra trás):
-          if posição_peça_desejada[1] == posição_peça_atual[1]+4:
-
-            if (matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == "o" or matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == "O") and matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] == matriz[posição_peça_desejada[0]+2][posição_peça_desejada[1]-2]:
-
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
-              Peças_obtidas1 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
+        #Direita p/ Frente
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"DF","C","@",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]-2][posição_peça_atual[1]+2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
+          Peças_obtidas1 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
             
-            elif (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == "o" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == "O") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]-2]:
+        #Direita p/ trás
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"DT","C","@",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
+          Peças_obtidas1 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]+2][posição_peça_atual[1]+2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
-              Peças_obtidas1 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
-            
-            else:
-              return False
+        #Esquerda p/ frente:
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"EF","C","@",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
+          Peças_obtidas1 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
-          #Esquerda (Pra frente ou pra trás):
-          if posição_peça_desejada[1] == posição_peça_atual[1]-4:
-
-            if (matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] == "o" or matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] == "O") and matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] == matriz[posição_peça_desejada[0]+2][posição_peça_desejada[1]+2]:
-
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]-2][posição_peça_atual[1]-2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
-              Peças_obtidas1 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
-
-            elif (matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "o" or matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == "O") and matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] == matriz[posição_peça_desejada[0]-2][posição_peça_desejada[1]+2]:
-
-              matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
-              matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] = " "
-              matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
-              Peças_obtidas1 += 1
-              Jogador -= 1
-              print("\nVocê obteve uma peça adversária! Jogue Novamente")
-              return True
-            
-            else:
-              return False
-
+        #Esquerda p/ trás:
+        elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"ET","C","@",matriz):
+          matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+          matriz[posição_peça_atual[0]+2][posição_peça_atual[1]-2] = " "
+          matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "@"
+          Peças_obtidas1 += 1
+          Jogador -= 1
+          print("\nVocê obteve uma peça adversária! Jogue Novamente")
+          return True
 
         #Movimento de uma dama(&) (Qualquer lugar)
-        if matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "&":
+        elif matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "&":
           return mover_dama2(posição_peça_atual,posição_peça_desejada,matriz)
+        
+        else:
+          return False
 
+  return False
+
+#Verifica se o movimento de uma peça normal desejada (Mover ou capturar) é valido, se sim retorna True, caso contrário, retorna False
+def verificar_movimento(posição_atual,posição_desejada,direção,ação,peça,matriz):
+
+  if ação == "M": #Mover sem capturar
+
+    #Verificar movimento de uma peça normal (o) sem capturar peça (Esquerda ou Direita):
+    if matriz[posição_atual[0]][posição_atual[1]] == peça and posição_desejada[0] == posição_atual[0]+2:
+      if posição_desejada[1] == posição_atual[1]+2 or posição_desejada[1] == posição_atual[1]-2:
+        return True
+
+    #Verificar movimento de uma peça normal (@) sem capturar peça (Esquerda ou Direita):
+    elif matriz[posição_atual[0]][posição_atual[1]] == peça and posição_desejada[0] == posição_atual[0]-2:
+      if posição_desejada[1] == posição_atual[1]+2 or posição_desejada[1] == posição_atual[1]-2:
+        return True
+      
+    else:
+      return False
+        
+  elif ação == "C": #Mover e capturar
+
+    #Verificar movimento de uma peça normal (o) capturando peça:
+    if (posição_desejada[0] == posição_atual[0]+4 or posição_desejada[0] == posição_atual[0]-4) and matriz[posição_atual[0]][posição_atual[1]] == peça:
+
+      #Verifica se pode obter a peça pela esquerda:
+      if posição_desejada[1] == posição_atual[1]-4:
+
+        if direção == "ET": #Esquerda e p/ trás
+          if (matriz[posição_atual[0]-2][posição_atual[1]-2] == "@" or matriz[posição_atual[0]-2][posição_atual[1]-2] == "&") and matriz[posição_atual[0]-2][posição_atual[1]-2] == matriz[posição_desejada[0]+2][posição_desejada[1]+2]:
+            return True
+
+        elif direção == "EF": #Esquerda e p/ frente
+          if (matriz[posição_atual[0]+2][posição_atual[1]-2] == "@" or matriz[posição_atual[0]+2][posição_atual[1]-2] == "&") and matriz[posição_atual[0]+2][posição_atual[1]-2] == matriz[posição_desejada[0]-2][posição_desejada[1]+2]:
+            return True
+
+        else:
+          return False
+          
+      #Verifica se pode obter a peça pela direita:
+      elif posição_desejada[1] == posição_atual[1]+4:
+
+        if direção == "DF": #Direita e p/ frente
+          if (matriz[posição_atual[0]+2][posição_atual[1]+2] == "@" or matriz[posição_atual[0]+2][posição_atual[1]+2] == "&") and matriz[posição_atual[0]+2][posição_atual[1]+2] == matriz[posição_desejada[0]-2][posição_desejada[1]-2]:
+            return True
+
+        elif direção == "DT": #Direita e p/ trás
+          if (matriz[posição_atual[0]-2][posição_atual[1]+2] == "@" or matriz[posição_atual[0]-2][posição_atual[1]+2] == "&") and matriz[posição_atual[0]-2][posição_atual[1]+2] == matriz[posição_desejada[0]+2][posição_desejada[1]-2]:
+            return True
+            
+        else:
+          return False
+      
+      else:
+        return False
+
+    #Verificar movimento de uma peça normal (@) capturando peça:
+    if (posição_desejada[0] == posição_atual[0]+4 or posição_desejada[0] == posição_atual[0]-4) and matriz[posição_atual[0]][posição_atual[1]] == peça:
+
+      #Verifica se pode obter a peça pela direita:
+      if posição_desejada[1] == posição_atual[1]+4:
+        
+        if direção == "DF": #Direita p/ frente
+          if (matriz[posição_atual[0]-2][posição_atual[1]+2] == "o" or matriz[posição_atual[0]-2][posição_atual[1]+2] == "O") and matriz[posição_atual[0]-2][posição_atual[1]+2] == matriz[posição_desejada[0]+2][posição_desejada[1]-2]:
+            return True
+
+        elif direção == "DT": #Direita p/ trás
+          if (matriz[posição_atual[0]+2][posição_atual[1]+2] == "o" or matriz[posição_atual[0]+2][posição_atual[1]+2] == "O") and matriz[posição_atual[0]+2][posição_atual[1]+2] == matriz[posição_desejada[0]-2][posição_desejada[1]-2]:
+            return True
+        
+        else:
+          return False
+
+      #Verifica se pode obter a peça pela esquerda:
+      elif posição_desejada[1] == posição_atual[1]-4:
+        
+        #Esquerda p/ frente
+        if direção == "EF":
+          if (matriz[posição_atual[0]-2][posição_atual[1]-2] == "o" or matriz[posição_atual[0]-2][posição_atual[1]-2] == "O") and matriz[posição_atual[0]-2][posição_atual[1]-2] == matriz[posição_desejada[0]+2][posição_desejada[1]+2]:
+            return True
+
+        #Esquerda p/ trás:
+        elif direção == "ET":
+          if (matriz[posição_atual[0]+2][posição_atual[1]-2] == "o" or matriz[posição_atual[0]+2][posição_atual[1]-2] == "O") and matriz[posição_atual[0]+2][posição_atual[1]-2] == matriz[posição_desejada[0]-2][posição_desejada[1]+2]:
+            return True
+        
+        else:
+          return False
+      
+      else:
+        return False
+  
+  
   return False
 
 #Verifica e transforma a peça caso ela possa virar dama
@@ -243,7 +306,7 @@ def verificar_dama(matriz):
     if matriz[20][i] == "o":
       matriz[20][i] = "O"
 
-#Mover uma dama (O), retorna True caso o movimento seja válido
+#Mover uma dama (O), retorna True caso seja um movimento válido ou retorna a posição da peça adversária caso seja um movimento válido de capturar, retorna False se o movimento for inválido
 def mover_dama1(posição_atual,posição_desejada,matriz):
 
   num_peças1 = 0
@@ -362,7 +425,7 @@ def mover_dama1(posição_atual,posição_desejada,matriz):
   else:
     return False
 
-#Mover uma dama(&), retorna True caso o movimento seja válido
+#Mover uma dama(&), retorna True caso seja um movimento válido ou retorna a posição da peça adversária caso seja um movimento válido de capturar, retorna False se o movimento for inválido
 def mover_dama2(posição_atual,posição_desejada,matriz):
 
   num_peças2 = 0

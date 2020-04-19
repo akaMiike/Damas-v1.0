@@ -21,7 +21,6 @@ def criar_tabuleiro():
       Tabuleiro[linha] = linha_separadora
       numero_linha += 1
 
-
     for coluna in range(23):
 
       if linha%2 == 0 and linha > 0 and linha <= 21:
@@ -77,13 +76,14 @@ def movimento_peça(movimento,matriz):
   global Peças_obtidas1
   global Jogador
 
+  #Verifica se o que foi digitado está de acordo com o exemplo mostrado
   if len(movimento) < 6 or movimento[2:4] != "--":
     return False
 
   else:
+
     posição_peça_atual = verificar_posição_atual(movimento[0],movimento[1],matriz)
     posição_peça_desejada = verificar_posição_desejada(movimento[4],movimento[5],matriz)
-
 
     if posição_peça_atual != False and posição_peça_desejada != False:
 
@@ -126,8 +126,6 @@ def movimento_peça(movimento,matriz):
           Jogador -= 1
           print("\nVocê obteve uma peça adversária! Jogue Novamente")
           return True
-
-          #Esquerda p/ frente:
         
         #Esquerda p/ frente:
         elif verificar_movimento(posição_peça_atual,posição_peça_desejada,"EF","C","o",matriz):
@@ -141,7 +139,21 @@ def movimento_peça(movimento,matriz):
 
         #Movimento de uma dama (O) (Qualquer lugar)
         elif matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "O":
-          return mover_dama1(posição_peça_atual,posição_peça_desejada,matriz)
+          move_dama1 = mover_dama1(posição_peça_atual,posição_peça_desejada,matriz)
+
+          if move_dama1 == False:
+            return False
+
+          else:
+            if move_dama1 != True:
+              matriz[move_dama1[0]][move_dama1[1]] = " "
+              Jogador -= 1
+              Peças_obtidas0 += 1
+              print("\nVocê obteve uma peça adversária! Jogue Novamente")
+            
+            matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+            matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "O"
+            return True
 
         else:
           return False
@@ -198,8 +210,22 @@ def movimento_peça(movimento,matriz):
 
         #Movimento de uma dama(&) (Qualquer lugar)
         elif matriz[posição_peça_atual[0]][posição_peça_atual[1]] == "&":
-          return mover_dama2(posição_peça_atual,posição_peça_desejada,matriz)
-        
+          move_dama2 = mover_dama2(posição_peça_atual,posição_peça_desejada,matriz)
+
+          if move_dama2 == False:
+            return False
+
+          else:
+            if move_dama2 != True:
+              matriz[move_dama2[0]][move_dama2[1]] = " "
+              Jogador -= 1
+              Peças_obtidas1 += 1
+              print("\nVocê obteve uma peça adversária. Jogue Novamente!")
+
+            matriz[posição_peça_atual[0]][posição_peça_atual[1]] = " "
+            matriz[posição_peça_desejada[0]][posição_peça_desejada[1]] = "&"
+            return True
+
         else:
           return False
 
@@ -211,12 +237,12 @@ def verificar_movimento(posição_atual,posição_desejada,direção,ação,peç
   if ação == "M": #Mover sem capturar
 
     #Verificar movimento de uma peça normal (o) sem capturar peça (Esquerda ou Direita):
-    if matriz[posição_atual[0]][posição_atual[1]] == peça and posição_desejada[0] == posição_atual[0]+2:
+    if peça == "o" and matriz[posição_atual[0]][posição_atual[1]] == "o" and posição_desejada[0] == posição_atual[0]+2:
       if posição_desejada[1] == posição_atual[1]+2 or posição_desejada[1] == posição_atual[1]-2:
         return True
 
     #Verificar movimento de uma peça normal (@) sem capturar peça (Esquerda ou Direita):
-    elif matriz[posição_atual[0]][posição_atual[1]] == peça and posição_desejada[0] == posição_atual[0]-2:
+    elif peça == "@" and matriz[posição_atual[0]][posição_atual[1]] == "@" and posição_desejada[0] == posição_atual[0]-2:
       if posição_desejada[1] == posição_atual[1]+2 or posição_desejada[1] == posição_atual[1]-2:
         return True
       
@@ -298,7 +324,7 @@ def verificar_movimento(posição_atual,posição_desejada,direção,ação,peç
   
   return False
 
-#Verifica e transforma a peça caso ela possa virar dama
+#Verifica e transforma a peça caso ela possa virar uma dama (O ou &)
 def verificar_dama(matriz):
   for i in range(2,20,4):
     if matriz[2][i+2] == "@":
@@ -306,36 +332,33 @@ def verificar_dama(matriz):
     if matriz[20][i] == "o":
       matriz[20][i] = "O"
 
-#Mover uma dama (O), retorna True caso seja um movimento válido ou retorna a posição da peça adversária caso seja um movimento válido de capturar, retorna False se o movimento for inválido
+#Verifica o movimento de uma dama (O), retorna True caso seja um movimento válido, retorna a posição da peça adversária caso seja um movimento válido de capturar ou retorna False se o movimento for inválido
 def mover_dama1(posição_atual,posição_desejada,matriz):
 
   num_peças1 = 0
   local_peça1 = []
   aux = 2
 
-  global Peças_obtidas0
-  global Jogador
-
   #Se o movimento for para direita (Para trás ou para frente): 
   if posição_desejada[1] > posição_atual[1]:
 
     #Para frente
     if posição_desejada[0] > posição_atual[0]:
-        while posição_atual[0]+aux != posição_desejada[0] or posição_atual[1]+aux != posição_desejada[1]:
+      while posição_atual[0]+aux != posição_desejada[0] or posição_atual[1]+aux != posição_desejada[1]:
 
-          #Verifica se há alguma peça adversária entre o caminho atual e desejado
-          if matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "@" or matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "&":
-            num_peças1 += 1
-            local_peça1 = [posição_atual[0]+aux,posição_atual[1]+aux]
+        #Verifica se há alguma peça adversária entre o caminho atual e desejado
+        if matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "@" or matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "&":
+          num_peças1 += 1
+          local_peça1 = [posição_atual[0]+aux,posição_atual[1]+aux]
 
-          #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
-          if matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "o" or matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "O" or num_peças1 > 1:
-            return False
+        #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
+        if matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "o" or matriz[posição_atual[0]+aux][posição_atual[1]+aux] == "O" or num_peças1 > 1:
+          return False
 
-          if posição_atual[0]+aux > 20 or posição_atual[1]+aux > 20:
-            return False
+        if posição_atual[0]+aux > 20 or posição_atual[1]+aux > 20:
+          return False
 
-          aux += 2
+        aux += 2
 
     #Para Trás 
     elif posição_desejada[0] < posição_atual[0]:
@@ -356,84 +379,73 @@ def mover_dama1(posição_atual,posição_desejada,matriz):
         aux += 2
 
     else:
-        return False
+      return False
 
     #Verificar se há e pode obter uma peça adversária
     if num_peças1 == 1:
-      matriz[local_peça1[0]][local_peça1[1]] = " "
-      Peças_obtidas0 += 1
-      Jogador -= 1
-      print("\nVocê obteve uma peça adversária! Jogue Novamente")
-      
+      return local_peça1
 
-    matriz[posição_atual[0]][posição_atual[1]] = " "
-    matriz[posição_desejada[0]][posição_desejada[1]] = "O"
-    return True
+    else:
+      return True
 
   #Se o movimento for para esquerda (Para trás ou para frente):
   elif posição_desejada[1] < posição_atual[1]:
 
     #Para frente
     if posição_desejada[0] > posição_atual[0]:
-        while posição_atual[0]+aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
+      while posição_atual[0]+aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
 
-          #Verifica se há alguma peça adversária entre o caminho atual e desejado
-          if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "&":
-            num_peças1 += 1
-            local_peça1 = [posição_atual[0]+aux,posição_atual[1]-aux]
+        #Verifica se há alguma peça adversária entre o caminho atual e desejado
+        if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "&":
+          num_peças1 += 1
+          local_peça1 = [posição_atual[0]+aux,posição_atual[1]-aux]
 
-          #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
-          if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "O" or num_peças1 > 1:
-            return False
+        #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
+        if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "O" or num_peças1 > 1:
+          return False
 
-          if posição_atual[0]+aux > 20 or posição_atual[1]-aux < 2:
-            return False
+        if posição_atual[0]+aux > 20 or posição_atual[1]-aux < 2:
+          return False
 
-          aux += 2
+        aux += 2
 
     #Para Trás
     elif posição_desejada[0] < posição_atual[0]:
-        while posição_atual[0]-aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
+      while posição_atual[0]-aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
 
-          #Verifica se há alguma peça adversária entre o caminho atual e desejado
-          if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "&":
-            num_peças1 += 1
-            local_peça1 = [posição_atual[0]-aux,posição_atual[1]-aux]
+        #Verifica se há alguma peça adversária entre o caminho atual e desejado
+        if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "&":
+          num_peças1 += 1
+          local_peça1 = [posição_atual[0]-aux,posição_atual[1]-aux]
 
-          #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
-          if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "O" or num_peças1 > 1:
-            return False
+        #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
+        if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "O" or num_peças1 > 1:
+          return False
 
-          if posição_atual[0]-aux < 2 or posição_atual[1]-aux < 2:
-            return False
+        if posição_atual[0]-aux < 2 or posição_atual[1]-aux < 2:
+          return False
 
-          aux += 2
+        aux += 2
 
     else:
-        return False
+      return False
 
-      #Verificar se tinha alguma peça adversária obtida ou não
+    #Verificar se tinha alguma peça adversária obtida ou não
     if num_peças1 == 1:
-      matriz[local_peça1[0]][local_peça1[1]] = " "
-      Peças_obtidas0 += 1
-      Jogador -= 1
-      print("\nVocê obteve uma peça adversária! Jogue Novamente")
+      return local_peça1
+      
+    else:
+      return True
 
-    matriz[posição_atual[0]][posição_atual[1]] = " "
-    matriz[posição_desejada[0]][posição_desejada[1]] = "O"
-    return True
   else:
     return False
 
-#Mover uma dama(&), retorna True caso seja um movimento válido ou retorna a posição da peça adversária caso seja um movimento válido de capturar, retorna False se o movimento for inválido
+#Verifica o movimento de uma dama (&), retorna True caso seja um movimento válido, retorna a posição da peça adversária caso seja um movimento válido de capturar ou retorna False se o movimento for inválido
 def mover_dama2(posição_atual,posição_desejada,matriz):
 
   num_peças2 = 0
   local_peça2 = []
   aux = 2
-
-  global Jogador
-  global Peças_obtidas1
 
   #Se o movimento for para direita (Para trás ou para frente): 
   if posição_desejada[1] > posição_atual[1]:
@@ -460,91 +472,83 @@ def mover_dama2(posição_atual,posição_desejada,matriz):
     elif posição_desejada[0] < posição_atual[0]:
       while posição_atual[0]-aux != posição_desejada[0] or posição_atual[1]+aux != posição_desejada[1]:
 
-          #Verifica se há alguma peça adversária entre o caminho atual e desejado
-          if matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "o" or matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "O":
-            num_peças2 += 1
-            local_peça2 = [posição_atual[0]-aux,posição_atual[1]+aux]
+        #Verifica se há alguma peça adversária entre o caminho atual e desejado
+        if matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "o" or matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "O":
+          num_peças2 += 1
+          local_peça2 = [posição_atual[0]-aux,posição_atual[1]+aux]
 
-          #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
-          if matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "@" or matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "&" or num_peças2 > 1:
-            return False
+        #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
+        if matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "@" or matriz[posição_atual[0]-aux][posição_atual[1]+aux] == "&" or num_peças2 > 1:
+          return False
 
-          if posição_atual[0]-aux < 2 or posição_atual[1]+aux > 20:
-            return False
+        if posição_atual[0]-aux < 2 or posição_atual[1]+aux > 20:
+          return False
 
-          aux += 2
+        aux += 2
 
     else:
       return False
 
     #Verificar se tinha alguma peça adversária obtida ou não
     if num_peças2 == 1:
-      matriz[local_peça2[0]][local_peça2[1]] = " "
-      Jogador -= 1
-      Peças_obtidas1 += 1
-      print("\nVocê obteve uma peça adversária! Jogue Novamente")
-
-    matriz[posição_atual[0]][posição_atual[1]] = " "
-    matriz[posição_desejada[0]][posição_desejada[1]] = "&"
-    return True
+      return local_peça2
+    
+    else:
+      return True
 
   #Se o movimento for para esquerda (Para trás ou para frente):
   elif posição_desejada[1] < posição_atual[1]:
 
     #Para Trás
     if posição_desejada[0] > posição_atual[0]:
-          while posição_atual[0]+aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
+      while posição_atual[0]+aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
 
-            #Verifica se há alguma peça adversária entre o caminho atual e desejado
-            if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "O":
-              num_peças2 += 1
-              local_peça2 = [posição_atual[0]+aux,posição_atual[1]-aux]
+        #Verifica se há alguma peça adversária entre o caminho atual e desejado
+        if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "O":
+          num_peças2 += 1
+          local_peça2 = [posição_atual[0]+aux,posição_atual[1]-aux]
 
-            #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
-            if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "&" or num_peças2 > 1:
-              return False
+        #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
+        if matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]+aux][posição_atual[1]-aux] == "&" or num_peças2 > 1:
+          return False
 
-            if posição_atual[0]+aux > 20 or posição_atual[1]-aux < 2:
-              return False
+        if posição_atual[0]+aux > 20 or posição_atual[1]-aux < 2:
+          return False
 
-            aux += 2
+        aux += 2
         
     #Para Frente
     elif posição_desejada[0] < posição_atual[0]:
       while posição_atual[0]-aux != posição_desejada[0] or posição_atual[1]-aux != posição_desejada[1]:
 
-            #Verifica se há alguma peça adversária entre o caminho atual e desejado
-            if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "O":
-              num_peças2 += 1
-              local_peça2 = [posição_atual[0]-aux,posição_atual[1]-aux]
+        #Verifica se há alguma peça adversária entre o caminho atual e desejado
+        if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "o" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "O":
+          num_peças2 += 1
+          local_peça2 = [posição_atual[0]-aux,posição_atual[1]-aux]
 
-            #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
-            if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "&" or num_peças2 > 1:
-              return False
+        #Verifica se há alguma peça aliada entre o caminho atual e desejado e se há mais de uma peça inimiga entre o caminho
+        if matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "@" or matriz[posição_atual[0]-aux][posição_atual[1]-aux] == "&" or num_peças2 > 1:
+          return False
 
-            if posição_atual[0]-aux < 2 or posição_atual[1]-aux < 2:
-              return False
+        if posição_atual[0]-aux < 2 or posição_atual[1]-aux < 2:
+          return False
 
-            aux += 2
+        aux += 2
 
     else:
       return False
 
     #Verificar se tinha alguma peça adversária obtida ou não
     if num_peças2 == 1:
-      matriz[local_peça2[0]][local_peça2[1]] = " "
-      Jogador -= 1
-      Peças_obtidas1 += 1
-      print("\nVocê obteve uma peça adversária! Jogue Novamente")
-
-    matriz[posição_atual[0]][posição_atual[1]] = " "
-    matriz[posição_desejada[0]][posição_desejada[1]] = "&"
-    return True
+      return local_peça2
+    
+    else:
+      return True
   
   else:
     return False
 
-#Verifica e retorna a posição da peça que deseja mover, se existir
+#Verifica e retorna a posição da peça que deseja mover, se existir a posição no tabuleiro
 def verificar_posição_atual(coluna_atual,linha_atual,matriz):
 
   coluna = 2
@@ -584,7 +588,7 @@ def verificar_posição_desejada(coluna_desejada,linha_desejada,matriz):
   else:
     return False
     
-#Verifica se todas as peças estão trancadas, se sim, é considerada derrota
+#Verifica se todas as peças estão trancadas, caso esteja, é considerada derrota
 def trancou_peça(matriz):
 
   global Peças_obtidas0
@@ -722,6 +726,7 @@ while Recomeçar == "S":
       movimento = input("\nJogada inválida, digite um movimento válido (Ex: A7--B6): ")
       mover_peça = movimento_peça(movimento,Tabuleiro)
 
+    #Verifica se todas as peças de algum jogador estão trancadas
     trancou_peça(Tabuleiro)
 
     #Verifica se todas as peças de alguem foram obtidas (Vencedor)

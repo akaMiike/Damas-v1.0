@@ -42,11 +42,11 @@ def criar_tabuleiro():
                 Tabuleiro[linha][coluna] = '#'
 
               #Coloca as peças 'o' e '@' no tabuleiro nas linhas pares
-              """else:
+              else:
                 if numero_linha < 3:
                   Tabuleiro[linha][coluna] = 'o'
                 if numero_linha > 6:
-                  Tabuleiro[linha][coluna] = '@'"""
+                  Tabuleiro[linha][coluna] = '@'
 
             else:
               
@@ -55,17 +55,12 @@ def criar_tabuleiro():
                 Tabuleiro[linha][coluna] = '#'
 
               #Coloca as peças 'o' e '@' no tabuleiro nas linhas impares
-              """else:
+              else:
                 if numero_linha < 3:
                   Tabuleiro[linha][coluna] = 'o'
                 if numero_linha > 6:
-                  Tabuleiro[linha][coluna] = '@'"""
-              
-              Tabuleiro[10][8] = "&"
-              Tabuleiro[12][10] = "@"
-              Tabuleiro[6][12] = "o"
-              Tabuleiro[6][4] = "o"
-              Tabuleiro[2][16] = "o"
+                  Tabuleiro[linha][coluna] = '@'
+
 
   return Tabuleiro
 
